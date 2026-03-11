@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Date Practice Pro</title>
+    <title>English Date Practice</title>
     <style>
         :root {
             --bg: #f9fafb;
@@ -13,7 +13,6 @@
             --border: #e5e7eb;
             --secondary-text: #6b7280;
             --success: #10b981;
-            --error: #ef4444;
         }
         
         body {
@@ -24,46 +23,35 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-font-smoothing: antialiased;
         }
 
         header { width: 100%; max-width: 800px; padding: 50px 20px 20px; box-sizing: border-box; text-align: center; }
-        h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+        h1 { font-size: 1.5rem; font-weight: 600; margin: 0; }
 
-        .nav { display: flex; gap: 8px; margin: 24px 20px; background: #f3f4f6; padding: 4px; border-radius: 10px; width: fit-content; }
-        .nav-btn { padding: 10px 24px; border: none; background: transparent; cursor: pointer; font-size: 0.85rem; font-weight: 500; border-radius: 8px; transition: all 0.2s; color: var(--secondary-text); }
+        .nav { display: flex; gap: 8px; margin: 24px 20px; background: #f3f4f6; padding: 4px; border-radius: 10px; }
+        .nav-btn { padding: 10px 24px; border: none; background: transparent; cursor: pointer; font-size: 0.85rem; font-weight: 500; border-radius: 8px; color: var(--secondary-text); }
         .nav-btn.active { background: white; color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        .instruction { font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 32px; padding: 0 20px; text-align: center; }
+        .instruction { font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 32px; text-align: center; }
         .container { width: 92%; max-width: 800px; display: none; margin-bottom: 60px; }
-        .container.active { display: block; animation: fadeIn 0.4s ease; }
+        .container.active { display: block; }
 
-        .grid { display: grid; gap: 12px; }
-        .grid-days { grid-template-columns: repeat(7, 1fr); }
-        .grid-months { grid-template-columns: repeat(4, 1fr); }
+        /* 根據要求改為 3 個一行 */
+        .grid { display: grid; gap: 12px; grid-template-columns: repeat(3, 1fr); }
 
-        .item { background: var(--card-bg); border: 1px solid var(--border); padding: 18px 4px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.15s; font-weight: 500; font-size: 0.95rem; }
-        .item:hover { border-color: var(--accent); background: #f8faff; transform: translateY(-1px); }
-        .item span { display: block; font-size: 0.65rem; color: #9ca3af; margin-top: 6px; text-transform: uppercase; }
+        .item { background: var(--card-bg); border: 1px solid var(--border); padding: 18px 4px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 500; }
+        .item span { display: block; font-size: 0.75rem; color: #9ca3af; margin-top: 6px; text-transform: none; } /* 取消全大楷 */
 
-        /* Full Date Section */
         .challenge-card { background: white; padding: 60px 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-        #display-date { font-size: 2.2rem; font-weight: 700; margin-bottom: 35px; color: var(--accent); min-height: 1.2em; }
-        .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        #display-date { font-size: 2.2rem; font-weight: 700; margin-bottom: 35px; color: var(--accent); }
+        .controls { display: flex; justify-content: center; gap: 10px; }
         
-        .btn-main { background: var(--text); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; }
-        .btn-record { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .btn-record.recording { background: var(--error); animation: pulse 1.5s infinite; }
+        .btn-main { background: var(--text); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; }
+        .btn-record { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; }
+        .btn-record.recording { background: #ef4444; }
 
-        /* Popup Window (Modal) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 400px; width: 80%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
-        .modal-msg { margin-bottom: 25px; color: var(--secondary-text); line-height: 1.5; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        @keyframes celebrate { 0% { transform: scale(0.5); } 100% { transform: scale(1.2); } }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 400px; width: 80%; text-align: center; }
     </style>
 </head>
 <body>
@@ -79,33 +67,31 @@
 </div>
 
 <div id="days" class="container active">
-    <p class="instruction">Select any date to listen to the ordinal pronunciation.</p>
-    <div class="grid grid-days" id="daysGrid"></div>
+    <p class="instruction">Tap a number to hear the pronunciation.</p>
+    <div class="grid" id="daysGrid"></div>
 </div>
 
 <div id="months" class="container">
-    <p class="instruction">Practice the pronunciation of each month below.</p>
-    <div class="grid grid-months" id="monthsGrid"></div>
+    <p class="instruction">Practice each month of the year.</p>
+    <div class="grid" id="monthsGrid"></div>
 </div>
 
 <div id="full" class="container">
-    <p class="instruction">Generate a date, click 'Record' and say it out loud (e.g. "March eleventh").</p>
+    <p class="instruction">Say: "The [Date] of [Month]" (e.g., The 1st of January)</p>
     <div class="challenge-card">
-        <div id="display-date">Ready?</div>
+        <div id="display-date">—</div>
         <div class="controls">
             <button class="btn-main" onclick="randomDate()">Generate Date</button>
-            <button id="recordBtn" class="btn-record" onclick="startRecording()" disabled>
-                <span>🎤 Record</span>
-            </button>
+            <button id="recordBtn" class="btn-record" onclick="startRecording()" disabled>🎤 Record</button>
         </div>
     </div>
 </div>
 
 <div id="feedbackModal" class="modal">
     <div class="modal-content">
-        <div id="modalEmoji" style="font-size: 4rem; margin-bottom: 10px;"></div>
-        <div id="modalTitle" class="modal-title"></div>
-        <p id="modalMsg" class="modal-msg"></p>
+        <div id="modalEmoji" style="font-size: 4rem;"></div>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMsg"></p>
         <button class="btn-main" onclick="closeModal()">Try Again</button>
     </div>
 </div>
@@ -115,9 +101,10 @@
     const ordinals = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th", "25th", "26th", "27th", "28th", "29th", "30th", "31st"];
     const fullNames = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth", "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth", "Twenty-first", "Twenty-second", "Twenty-third", "Twenty-fourth", "Twenty-fifth", "Twenty-sixth", "Twenty-seventh", "Twenty-eighth", "Twenty-ninth", "Thirtieth", "Thirty-first"];
 
-    let targetDateText = "";
+    let targetMonth = "";
+    let targetDay = "";
 
-    // Init Logic
+    // Init Date & Month Grids (3 columns)
     const dGrid = document.getElementById('daysGrid');
     ordinals.forEach((d, i) => {
         const el = document.createElement('div');
@@ -143,82 +130,55 @@
         btn.classList.add('active');
     }
 
-    function speak(text) {
+    function speak(t) {
         window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
+        const msg = new SpeechSynthesisUtterance(t);
         msg.lang = 'en-US';
-        msg.rate = 0.85;
         window.speechSynthesis.speak(msg);
     }
 
     function randomDate() {
         const mIdx = Math.floor(Math.random() * 12);
         const dIdx = Math.floor(Math.random() * 31);
-        targetDateText = `${months[mIdx]} ${fullNames[dIdx]}`;
-        const display = document.getElementById('display-date');
-        display.innerText = `${ordinals[dIdx]} ${months[mIdx]}`;
-        display.onclick = () => speak(`${months[mIdx]} ${fullNames[dIdx]}`);
+        targetMonth = months[mIdx];
+        targetDay = fullNames[dIdx];
+        document.getElementById('display-date').innerText = `${ordinals[dIdx]} ${months[mIdx]}`;
+        // 更新發音邏輯：The [Day] of [Month]
+        document.getElementById('display-date').onclick = () => speak(`The ${targetDay} of ${targetMonth}`);
         document.getElementById('recordBtn').disabled = false;
     }
 
-    // Voice Recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
-        recognition.interimResults = false;
-
+        
         function startRecording() {
             recognition.start();
-            const btn = document.getElementById('recordBtn');
-            btn.classList.add('recording');
-            btn.innerHTML = "<span>🎤 Listening...</span>";
+            document.getElementById('recordBtn').classList.add('recording');
         }
 
         recognition.onresult = (event) => {
             const result = event.results[0][0].transcript.toLowerCase();
-            const target = targetDateText.toLowerCase();
-            
-            // 簡單比對邏輯：檢查是否包含月份和日期關鍵字
-            const isCorrect = result.includes(target.split(' ')[0].toLowerCase()) && 
-                              (result.includes(target.split(' ')[1].toLowerCase()) || result.includes((ordinals[fullNames.indexOf(target.split(' ')[1])]).replace(/\D/g,'')));
-
+            const isCorrect = result.includes(targetMonth.toLowerCase()) && result.includes(targetDay.toLowerCase());
             showFeedback(isCorrect, result);
         };
 
         recognition.onend = () => {
-            const btn = document.getElementById('recordBtn');
-            btn.classList.remove('recording');
-            btn.innerHTML = "<span>🎤 Record</span>";
+            document.getElementById('recordBtn').classList.remove('recording');
+            // 自動結束 Mic Access 是瀏覽器預設行為（單次識別後結束）
         };
     }
 
     function showFeedback(correct, spoken) {
         const modal = document.getElementById('feedbackModal');
-        const emoji = document.getElementById('modalEmoji');
-        const title = document.getElementById('modalTitle');
-        const msg = document.getElementById('modalMsg');
-
-        if (correct) {
-            emoji.innerText = "🌟";
-            emoji.style.animation = "celebrate 0.5s infinite alternate";
-            title.innerText = "Excellent!";
-            title.style.color = "var(--success)";
-            msg.innerHTML = `You said: "<b>${spoken}</b>"<br>Perfect pronunciation! You're a natural!`;
-        } else {
-            emoji.innerText = "💪";
-            emoji.style.animation = "none";
-            title.innerText = "Keep going!";
-            title.style.color = "var(--text)";
-            msg.innerHTML = `You said: "<b>${spoken}</b>"<br>Almost there! Try to focus on the month and the date. Let's try again!`;
-        }
+        document.getElementById('modalEmoji').innerText = correct ? "🌟" : "💪";
+        document.getElementById('modalTitle').innerText = correct ? "Excellent!" : "Keep going!";
+        document.getElementById('modalMsg').innerHTML = `You said: "<b>${spoken}</b>"<br>${correct ? "Perfect pronunciation!" : "Try to say the full phrase again!"}`;
         modal.style.display = "flex";
     }
 
-    function closeModal() {
-        document.getElementById('feedbackModal').style.display = "none";
-    }
+    function closeModal() { document.getElementById('feedbackModal').style.display = "none"; }
 </script>
-
 </body>
 </html>
