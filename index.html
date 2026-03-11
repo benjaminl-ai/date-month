@@ -12,7 +12,6 @@
             --card-bg: #ffffff;
             --border: #e5e7eb;
             --secondary-text: #6b7280;
-            --success: #10b981;
         }
         
         body {
@@ -36,22 +35,24 @@
         .container { width: 92%; max-width: 800px; display: none; margin-bottom: 60px; }
         .container.active { display: block; }
 
-        /* 根據要求改為 3 個一行 */
         .grid { display: grid; gap: 12px; grid-template-columns: repeat(3, 1fr); }
 
         .item { background: var(--card-bg); border: 1px solid var(--border); padding: 18px 4px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 500; }
-        .item span { display: block; font-size: 0.75rem; color: #9ca3af; margin-top: 6px; text-transform: none; } /* 取消全大楷 */
+        .item span { display: block; font-size: 0.75rem; color: #9ca3af; margin-top: 6px; text-transform: none; }
 
         .challenge-card { background: white; padding: 60px 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-        #display-date { font-size: 2.2rem; font-weight: 700; margin-bottom: 35px; color: var(--accent); }
+        #display-date { font-size: 2.2rem; font-weight: 700; margin-bottom: 35px; color: var(--accent); cursor: pointer; }
         .controls { display: flex; justify-content: center; gap: 10px; }
         
-        .btn-main { background: var(--text); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; }
-        .btn-record { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; }
-        .btn-record.recording { background: #ef4444; }
+        .btn-main { background: var(--text); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+        .btn-record { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.3s; }
+        
+        /* 閃爍動畫 */
+        .btn-record.recording { background: #ef4444; animation: flash 1s infinite; }
+        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 400px; width: 80%; text-align: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 400px; width: 80%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -82,16 +83,16 @@
         <div id="display-date">—</div>
         <div class="controls">
             <button class="btn-main" onclick="randomDate()">Generate Date</button>
-            <button id="recordBtn" class="btn-record" onclick="startRecording()" disabled>🎤 Record</button>
+            <button id="recordBtn" class="btn-record" onclick="handleRecord()" disabled>🎤 Record</button>
         </div>
     </div>
 </div>
 
 <div id="feedbackModal" class="modal">
     <div class="modal-content">
-        <div id="modalEmoji" style="font-size: 4rem;"></div>
-        <h2 id="modalTitle"></h2>
-        <p id="modalMsg"></p>
+        <div id="modalEmoji" style="font-size: 4rem; margin-bottom: 15px;"></div>
+        <h2 id="modalTitle" style="margin: 10px 0;"></h2>
+        <p id="modalMsg" style="margin-bottom: 25px; color: #4b5563; font-weight: 500;"></p>
         <button class="btn-main" onclick="closeModal()">Try Again</button>
     </div>
 </div>
@@ -103,8 +104,9 @@
 
     let targetMonth = "";
     let targetDay = "";
+    let isRecording = false;
+    let recognition;
 
-    // Init Date & Month Grids (3 columns)
     const dGrid = document.getElementById('daysGrid');
     ordinals.forEach((d, i) => {
         const el = document.createElement('div');
@@ -143,38 +145,43 @@
         targetMonth = months[mIdx];
         targetDay = fullNames[dIdx];
         document.getElementById('display-date').innerText = `${ordinals[dIdx]} ${months[mIdx]}`;
-        // 更新發音邏輯：The [Day] of [Month]
         document.getElementById('display-date').onclick = () => speak(`The ${targetDay} of ${targetMonth}`);
         document.getElementById('recordBtn').disabled = false;
     }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
+        recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
-        
-        function startRecording() {
-            recognition.start();
-            document.getElementById('recordBtn').classList.add('recording');
-        }
+        recognition.continuous = true; 
 
         recognition.onresult = (event) => {
-            const result = event.results[0][0].transcript.toLowerCase();
+            const result = event.results[event.results.length - 1][0].transcript.toLowerCase();
             const isCorrect = result.includes(targetMonth.toLowerCase()) && result.includes(targetDay.toLowerCase());
-            showFeedback(isCorrect, result);
-        };
-
-        recognition.onend = () => {
-            document.getElementById('recordBtn').classList.remove('recording');
-            // 自動結束 Mic Access 是瀏覽器預設行為（單次識別後結束）
+            showFeedback(isCorrect);
         };
     }
 
-    function showFeedback(correct, spoken) {
+    function handleRecord() {
+        const btn = document.getElementById('recordBtn');
+        if (!isRecording) {
+            recognition.start();
+            isRecording = true;
+            btn.innerText = "Click to stop recording...";
+            btn.classList.add('recording');
+        } else {
+            recognition.stop(); // 停止並自動釋放麥克風
+            isRecording = false;
+            btn.innerText = "🎤 Record";
+            btn.classList.remove('recording');
+        }
+    }
+
+    function showFeedback(correct) {
         const modal = document.getElementById('feedbackModal');
         document.getElementById('modalEmoji').innerText = correct ? "🌟" : "💪";
         document.getElementById('modalTitle').innerText = correct ? "Excellent!" : "Keep going!";
-        document.getElementById('modalMsg').innerHTML = `You said: "<b>${spoken}</b>"<br>${correct ? "Perfect pronunciation!" : "Try to say the full phrase again!"}`;
+        document.getElementById('modalMsg').innerText = correct ? "Perfect pronunciation! You're a natural!" : "Almost there! Try again with the full phrase.";
         modal.style.display = "flex";
     }
 
