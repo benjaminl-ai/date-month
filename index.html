@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生動學英文：日期與月份</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f8ff; color: #333; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .container { max-width: 900px; width: 100%; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* 月份卡片樣式 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card { background: #fff; border: 2px solid #e0e0e0; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+        .card:hover { transform: scale(1.05); background: #e8f4fd; border-color: #3498db; }
+        .card h3 { margin: 0; color: #e67e22; font-size: 1.4em; }
+        .card p { font-size: 0.9em; color: #7f8c8d; margin: 5px 0; }
+        .phonetic { font-weight: bold; color: #27ae60; font-family: 'Arial'; }
+
+        /* 日期序數練習 */
+        .date-section { margin-top: 40px; padding: 20px; background: #fffde7; border-radius: 10px; border-left: 5px solid #f1c40f; }
+        .number-box { display: inline-block; padding: 10px 15px; margin: 5px; background: white; border: 1px solid #ddd; border-radius: 5px; font-weight: bold; }
+        
+        .btn-speak { background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .btn-speak:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <h1>📅 英文日期與月份互動教室</h1>
+    <p>老師教學重點：請學生觀察字尾的規律，並點擊卡片聽發音。</p>
+
+    <div class="container">
+        <h2>第一部分：十二個月份 (Months)</h2>
+        <div class="grid-container" id="monthsGrid">
+            </div>
+
+        <div class="date-section">
+            <h2>第二部分：日期怎麼說？(Ordinal Numbers)</h2>
+            <p>注意：英文日期要用序數（第幾個），最難的是 <b>1st, 2nd, 3rd</b>！</p>
+            <div id="dateGrid">
+                <div class="number-box">1st <br><span style="color:#c0392b">First</span></div>
+                <div class="number-box">2nd <br><span style="color:#c0392b">Second</span></div>
+                <div class="number-box">3rd <br><span style="color:#c0392b">Third</span></div>
+                <div class="number-box">4th <br><span>Fourth</span></div>
+                <div class="number-box">...之後多數加 "th"</div>
+            </div>
+            <button class="btn-speak" onclick="speak('First, Second, Third, Fourth, Fifth')">聽聽前五個讀音</button>
+        </div>
+    </div>
+
+    <script>
+        const months = [
+            { name: "January", phonetic: "/ˈdʒæn.ju.er.i/", tip: "Jan-u-ary" },
+            { name: "February", phonetic: "/ˈfeb.ru.er.i/", tip: "Feb-ru-ary" },
+            { name: "March", phonetic: "/mɑːrtʃ/", tip: "Mar-ch" },
+            { name: "April", phonetic: "/ˈeɪ.prəl/", tip: "A-pril" },
+            { name: "May", phonetic: "/meɪ/", tip: "M-ay" },
+            { name: "June", phonetic: "/dʒuːn/", tip: "J-une" },
+            { name: "July", phonetic: "/dʒuːˈlaɪ/", tip: "Ju-ly" },
+            { name: "August", phonetic: "/ɔːˈɡʌst/", tip: "Au-gust" },
+            { name: "September", phonetic: "/sepˈtem.bər/", tip: "Sep-tem-ber" },
+            { name: "October", phonetic: "/ɒkˈtəʊ.bər/", tip: "Oc-to-ber" },
+            { name: "November", phonetic: "/nəʊˈvem.bər/", tip: "No-vem-ber" },
+            { name: "December", phonetic: "/dɪˈsem.bər/", tip: "De-cem-ber" }
+        ];
+
+        const grid = document.getElementById('monthsGrid');
+
+        months.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>${m.name}</h3>
+                <p class="phonetic">${m.phonetic}</p>
+                <p>拆解：${m.tip}</p>
+                <button class="btn-speak">🔊 播音</button>
+            `;
+            card.onclick = () => speak(m.name);
+            grid.appendChild(card);
+        });
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = text;
+            msg.lang = 'en-US';
+            msg.rate = 0.8; // 稍微減慢速度讓學生聽得清楚
+            window.speechSynthesis.speak(msg);
+        }
+    </script>
+</body>
+</html>
